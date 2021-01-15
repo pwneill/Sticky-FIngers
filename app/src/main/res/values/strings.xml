@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Finger Game</string>
+    <string name="myName">Phelsah McRgm</string>
+    <string name="time">Time</string>
+    <string name="thousand">1000</string>
+    <string name="btnText">Tap tap!</string>
+    <string name="alertTitle">Way to go!</string>
+    <string name="alertText">Play Again?</string>
 </resources>
