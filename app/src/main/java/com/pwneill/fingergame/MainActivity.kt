@@ -7,77 +7,96 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var timerTextView: TextView
     private lateinit var thousandTextView: TextView
     private lateinit var tapButton: Button
-
-    private val timeMm: Long = 30000
+    private lateinit var timer: CountDownTimer
     private val timeIncrement: Long = 1000
-    private var thousand: Long = 1000
+    private var timeMm: Long = 30000
+    private var clicks: Long = 300
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+        if (savedInstanceState != null) {
+            timeMm = savedInstanceState.getLong("timeRemaining")
+            clicks = savedInstanceState.getLong("clicks")
+        } else {
+            timeMm = 30000
+            clicks = 300
+        }
+
         timerTextView = findViewById(R.id.textView)
         thousandTextView = findViewById(R.id.textView2)
         tapButton = findViewById(R.id.button)
 
-        thousandTextView.text = thousand.toString()
+        thousandTextView.text = clicks.toString()
 
         timer()
 
         tapButton.setOnClickListener { //Your code here
 
-            thousand -= 1
-            thousandTextView.text = thousand.toString()
+            clicks -= 1
+            thousandTextView.text = clicks.toString()
 
-            if (timeMm > 0 && thousand <= 0) {
+            if (timeMm > 0 && clicks <= 0) {
 
-                Toast.makeText(applicationContext, "Game Over Man!", Toast.LENGTH_SHORT).show()\\
+                Toast.makeText(applicationContext, "Game Over!", Toast.LENGTH_SHORT).show()
 
-                gameReset()
-
+                gameReset(true)
             }
-
         }
-
     }
 
     private fun timer () {
-    object : CountDownTimer(timeMm, timeIncrement) {
-        override fun onTick(millisUntilFinished: Long) {
-            timerTextView.text = "seconds remaining: " + millisUntilFinished / 1000
-        }
+    timer = object: CountDownTimer(timeMm, timeIncrement) {
+            override fun onTick(millisUntilFinished: Long) {
+                val timerText: String = "seconds remaining: " + millisUntilFinished / 1000
+                timerTextView.text = timerText
+            }
 
-        override fun onFinish() {
-            timerTextView.text = "done!"
-            Toast.makeText(applicationContext, "That's Time!", Toast.LENGTH_LONG).show()
-        }
-    }.start()
+            override fun onFinish() {
+                timerTextView.text = "done!"
+                gameReset(false)
+            }
+        }.start()
 
 }
-    private fun gameReset() {
+    private fun gameReset(winner: Boolean) {
 
-        val builder = AlertDialog.Builder(applicationContext)
-        builder.setTitle(R.string.alertTitle)
-        builder.setMessage("Play Again?")
-//builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
+        val builder = AlertDialog.Builder(this@MainActivity)
 
-        builder.setPositiveButton("Let's go") { dialog, which ->
-            gameReset()
+        if (winner) {
+            builder.setTitle(R.string.alertTitleVictory)
+        } else {
+            builder.setTitle((R.string.alertTitleLoss))
         }
+
+        builder.setMessage("Play Again?")
+
+        builder.setPositiveButton("Let's go") { _, _ ->
+            val clicks: Long = 300
+            thousandTextView.text = clicks.toString()
+
+            val time = 30000
+            timerTextView.text = time.toString()
+
+            timer()
+        }
+        builder.setCancelable(false)
         builder.show()
+    }
 
-        var thousand: Long = 1000
-        thousandTextView.text = thousand.toString()
-
-        var time = 30000
-        timerTextView.text = time.toString()
-
-        timer()
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putLong("timeRemaining", timeMm)
+        outState.putLong("clicks", clicks)
+        timer.cancel()
     }
 }

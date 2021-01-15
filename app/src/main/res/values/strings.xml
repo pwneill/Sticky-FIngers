@@ -4,6 +4,7 @@
     <string name="time">Time</string>
     <string name="thousand">1000</string>
     <string name="btnText">Tap tap!</string>
-    <string name="alertTitle">Way to go!</string>
+    <string name="alertTitleVictory">Way to go!</string>
+    <string name="alertTitleLoss">Game Over, Man!</string>
     <string name="alertText">Play Again?</string>
 </resources>
