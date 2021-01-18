@@ -3,6 +3,8 @@ package com.pwneill.fingergame
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -21,23 +23,16 @@ class MainActivity : AppCompatActivity() {
     private var clicks: Long = 300
 
     override fun onSaveInstanceState(outState: Bundle) {
-        Log.i("savedInstance", "narroooooooo")
         super.onSaveInstanceState(outState)
         outState.putLong("timeRemaining", timeMm)
         outState.putLong("clicks", clicks)
-        countdownTimer.cancel();
-        val truthy = countdownTimer == null
-        Log.i("timer", truthy.toString())
+        countdownTimer.cancel()
     }
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Log.i("timer", "On Create Methods is Called");
-        Log.i("timer", "onCreateYonder")
         timerTextView = findViewById(R.id.textView)
         thousandTextView = findViewById(R.id.textView2)
         tapButton = findViewById(R.id.button)
@@ -64,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
                     Toast.makeText(applicationContext, "Game Over!", Toast.LENGTH_SHORT).show()
 
-                    gameReset(true)
+                    this@MainActivity.gameReset(true)
                 }
             }
 
@@ -82,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFinish() {
                 timerTextView.text = "done!"
-                gameReset(false)
+                this@MainActivity.gameReset(false)
             }
         }
         countdownTimer.start()
@@ -124,5 +119,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menuInflater.inflate(R.menu.menu, menu)
+
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        super.onOptionsItemSelected(item)
+
+        when (item.itemId) {
+            R.id.menuItem -> {
+                Toast.makeText(applicationContext, "Your current version is " +
+                        "${BuildConfig.VERSION_NAME}." +
+                        "Check Google Play to make sure you're playing the most recent version!",
+                    Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        return true
+
+    }
 
 }
